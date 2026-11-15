@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Mission</title>
+  <meta name="description" content="Juego de decisiones espaciales: 12 roles, 10 mundos.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="spaceBg" class="space-bg" aria-hidden="true"></canvas>
+  <div class="stars"></div>
+  <div class="stars stars-2"></div>
+  <div id="fx" class="fx-layer" aria-hidden="true"></div>
+
+  <div id="intro" class="cine-overlay hidden">
+    <canvas id="cine"></canvas>
+    <div class="letterbox top"></div>
+    <div class="letterbox bottom"></div>
+    <div class="cine-vignette"></div>
+    <div class="cine-caption" id="cineCaption"></div>
+    <div class="cine-title" id="cineTitle">
+      <small data-i18n="tagline">MÁS ALLÁ DE LA TIERRA, TODO DEPENDE DE VOS</small>
+      <h1>SPACE <b>MISSION</b></h1>
+    </div>
+    <button class="skip" id="skipIntro" data-i18n="skip">OMITIR ▸</button>
+  </div>
+
+  <div id="banner" class="banner">
+    <span id="bannerKicker">CAPÍTULO 01</span>
+    <h2 id="bannerTitle">PREPARACIÓN</h2>
+    <small id="bannerSub"></small>
+  </div>
+
+  <header class="topbar">
+    <a class="logo" href="#"><span class="logo-mark">✦</span> SPACE <b>MISSION</b></a>
+    <div class="top-right">
+      <div class="lang-switch" role="group" aria-label="Idioma / Language">
+        <button id="langEs" class="lang-btn active" type="button">ESPAÑOL</button>
+        <button id="langEn" class="lang-btn" type="button">ENGLISH</button>
+      </div>
+      <span class="top-status"><span class="live-dot"></span> <span data-i18n="live">EN VIVO</span></span>
+      <button id="muteBtn" class="icon-btn" aria-label="Silenciar">🔊</button>
+    </div>
+  </header>
+
+  <main class="app">
+    <!-- BIENVENIDA -->
+    <section id="welcome" class="screen active">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="kicker" id="heroKicker">12 ROLES · 10 MUNDOS · <span id="decisionCount">+900</span> DECISIONES</p>
+          <h1 data-i18n-html="heroTitle">EL COSMOS<br><em>TE LLAMA.</em></h1>
+          <div class="hero-buttons">
+            <button class="btn btn-primary btn-xl" id="newGame" data-i18n-html="play">JUGAR <span>→</span></button>
+            <button class="btn btn-ghost" id="replayIntro" data-i18n="intro">▶ INTRO</button>
+          </div>
+          <div class="best" id="bestScore">SIN RÉCORD AÚN</div>
+        </div>
+        <div class="hero-art">
+          <div class="planet-glow"></div>
+          <img class="hero-planet" src="img/marte.jpg" alt="Marte" width="1024" height="1024">
+          <span class="hero-planet-name" id="heroPlanetName">MARTE</span>
+          <div class="orbit orbit-a"><i class="sat"></i></div>
+          <div class="orbit orbit-b"></div>
+          <div class="ship" aria-hidden="true">
+            <svg viewBox="0 0 80 160" width="64" height="128">
+              <defs>
+                <linearGradient id="shipBody" x1="0" x2="1"><stop offset="0" stop-color="#9aa9c2"/><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#8293b0"/></linearGradient>
+                <linearGradient id="shipNose" x1="0" x2="1"><stop offset="0" stop-color="#d8582c"/><stop offset=".45" stop-color="#ffb27a"/><stop offset="1" stop-color="#c94c24"/></linearGradient>
+                <linearGradient id="shipFlame" y1="0" y2="1" x1="0" x2="0"><stop offset="0" stop-color="#fff6d8"/><stop offset=".35" stop-color="#ffab5c"/><stop offset="1" stop-color="#ff5a24" stop-opacity="0"/></linearGradient>
+              </defs>
+              <g class="ship-flame"><path d="M30 112 Q40 160 50 112 Z" fill="url(#shipFlame)"/><path d="M35 112 Q40 135 45 112 Z" fill="#fff"/></g>
+              <path d="M28 70 L10 110 L28 100 Z M52 70 L70 110 L52 100 Z" fill="url(#shipNose)"/>
+              <path d="M40 4 C54 20 55 42 55 60 L55 108 L25 108 L25 60 C25 42 26 20 40 4 Z" fill="url(#shipBody)"/>
+              <path d="M40 4 C48 13 51 20 52.5 28 L27.5 28 C29 20 32 13 40 4 Z" fill="url(#shipNose)"/>
+              <rect x="25" y="78" width="30" height="4" fill="#1c2a40"/>
+              <circle cx="40" cy="50" r="8" fill="#57e4e8" stroke="#1c3a5c" stroke-width="3"/>
+              <circle cx="37.5" cy="47.5" r="2" fill="#fff" opacity=".8"/>
+              <path d="M32 108 L29 116 L51 116 L48 108 Z" fill="#2c3342"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRIPULACIÓN -->
+    <section id="roles" class="screen">
+      <div class="step-head">
+        <div><p class="kicker" data-i18n="step1">PASO 1 / 2</p><h2 data-i18n="buildCrew">ARMÁ TU TRIPULACIÓN</h2></div>
+        <div class="quick-setup">
+          <div class="mode-switch">
+            <button class="mode-option selected" id="soloMode" data-i18n="solo">◉ SOLO</button>
+            <button class="mode-option" id="teamMode" data-i18n="team">◎ EQUIPO</button>
+          </div>
+          <input id="missionName" class="mini-input" value="Proyecto Horizonte" maxlength="30" aria-label="Nombre de la misión">
+          <input id="teamName" class="mini-input hidden" value="Tripulación Orión" maxlength="24" aria-label="Nombre del equipo">
+        </div>
+      </div>
+      <div class="role-grid" id="roleGrid"></div>
+      <div class="dock">
+        <div class="dock-left"><div class="role-dots" id="roleDots"></div><span class="counter" id="roleCounter">0/4</span></div>
+        <div class="dock-actions">
+          <button class="btn btn-ghost" id="backHome">←</button>
+          <button class="btn btn-ghost" id="randomCrew" data-i18n="random">🎲 AL AZAR</button>
+          <button class="btn btn-primary" id="toPlanet" disabled data-i18n="destination">DESTINO →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESTINO -->
+    <section id="planet" class="screen">
+      <div class="step-head"><div><p class="kicker" data-i18n="step2">PASO 2 / 2</p><h2 data-i18n="pickWorld">ELEGÍ TU MUNDO</h2></div></div>
+      <div class="planet-layout">
+        <div class="planet-grid" id="planetGrid"></div>
+        <aside class="planet-detail" id="planetDetail"></aside>
+      </div>
+      <div class="dock">
+        <div class="dock-left"></div>
+        <div class="dock-actions">
+          <button class="btn btn-ghost" id="backToRoles">←</button>
+          <button class="btn btn-primary btn-launch" id="launchMission" disabled data-i18n="launch">DESPEGAR 🚀</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- JUEGO -->
+    <section id="game" class="screen">
+      <div class="hud">
+        <div class="hud-mission"><span id="missionPlanet" class="hud-planet"></span><b id="missionTitle">PROYECTO HORIZONTE</b></div>
+        <div class="hud-progress"><div class="segs" id="chapterSegs"></div><span id="chapterCount">01 / 20</span></div>
+        <div class="hud-score"><span id="streak" class="streak off">🔥 0</span><span class="xp-wrap"><b id="xp">0</b> XP</span></div>
+      </div>
+      <div class="game-layout">
+        <article class="story-card" id="storyCard">
+          <div class="story-image kb" id="storyImage">
+            <img id="storyImg" alt="" width="1536" height="864">
+            <div class="story-shade"></div>
+            <span class="image-stamp" id="imageStamp"></span>
+            <div class="story-head">
+              <h2 id="storyTitle">Una nueva misión</h2>
+              <p id="storyText"></p>
+            </div>
+          </div>
+          <div class="story-content">
+            <div class="tags"><div id="roleTurn" class="role-turn"></div><div id="circTag" class="circ-tag hidden"></div></div>
+            <div id="choices" class="choices"></div>
+          </div>
+          <div id="result" class="result" role="status" aria-live="polite"></div>
+        </article>
+        <aside class="side-panel">
+          <div class="side-title" data-i18n="status">ESTADO</div>
+          <div class="stats-side" id="stats"></div>
+          <div class="side-title crew-title" data-i18n="crew">TRIPULACIÓN</div>
+          <div id="crewStatus"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section id="ending" class="screen">
+      <div class="ending-card">
+        <div class="ending-hero" id="endingHero">
+          <div class="ending-icon" id="endingIcon">🏆</div>
+          <h1 id="endingTitle">MISIÓN CUMPLIDA</h1>
+          <div class="ending-stars" id="endingStars"></div>
+          <p id="endingText" class="ending-text"></p>
+        </div>
+        <div class="ending-xp"><b id="endingXp">0</b><span>XP</span></div>
+        <div class="record" id="endingRecord"></div>
+        <div class="ending-meta" id="endingMeta"></div>
+        <div class="final-stats" id="finalStats"></div>
+        <div class="perf" id="perf"></div>
+        <p class="lesson" id="lesson"></p>
+        <div class="ending-actions">
+          <button class="btn btn-primary btn-xl" id="playAgain" data-i18n="again">OTRA VEZ ↻</button>
+          <button class="btn btn-ghost" id="home" data-i18n="home">INICIO</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
